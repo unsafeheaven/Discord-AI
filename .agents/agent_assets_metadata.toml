@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "JyJLkX_3l1hOlb38-0Ds8"
+uri = "file://bot.zip"
+type = "unspecified"
+title = "Discord Bot (Railway-ready)"
