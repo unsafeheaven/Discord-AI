@@ -117,9 +117,14 @@ class ChatCog(commands.Cog):
         is_admin: bool = False,
         force: bool = False,
     ):
-        async with message.channel.typing():
-            history = history_manager.get_messages(channel_id)
-            response = await get_ai_response(history, f"{username}: {user_text}", is_admin=is_admin)
+        try:
+            async with message.channel.typing():
+                history = history_manager.get_messages(channel_id)
+                response = await get_ai_response(history, f"{username}: {user_text}", is_admin=is_admin)
+        except (discord.Forbidden, discord.HTTPException) as e:
+            import logging
+            logging.getLogger("bot").warning(f"Missing permission to type/reply in channel {channel_id}: {e}")
+            return
 
         # Save to history
         history_manager.add(channel_id, "user", user_text, username)
