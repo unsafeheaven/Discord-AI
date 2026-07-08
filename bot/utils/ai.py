@@ -74,7 +74,7 @@ async def get_ai_response(messages: List[Dict], user_message: str, is_admin: boo
 
     try:
         response = await client.chat.completions.create(
-            model="meta-llama/llama-3.1-8b-instruct",
+            model="meta-llama/llama-3.3-70b-instruct:free",
             messages=full_messages,
             max_tokens=150,
             temperature=1.0,
