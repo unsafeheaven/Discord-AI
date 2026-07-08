@@ -1,0 +1,2 @@
+- [Discord bot as standalone Python app](discord-bot-python.md) — bots live outside the pnpm workspace/artifact system; run via a plain `configureWorkflow`, not `createArtifact`.
+- [OpenRouter AI integration account gating](openrouter-ai-integration-gating.md) — `setupReplitAIIntegrations` can fail with `awaiting_account_upgrade`; fall back to `requestSecrets` for the provider's own API key.

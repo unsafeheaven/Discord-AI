@@ -1,36 +1,50 @@
-# [Project name]
+# Discord AI Persona Bot
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A Discord bot with a chill/rude Gen Z persona that chats with server members, powered by an LLM via OpenRouter.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
+- `Discord Bot` workflow — runs `cd bot && python main.py`
+- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000, unused by the bot; reserved for future web features)
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- Required secrets: `DISCORD_TOKEN` (Discord bot token), `OPENROUTER_API_KEY` (OpenRouter API key)
 
 ## Stack
 
-- pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- Bot: Python 3.11, discord.py, openai SDK (pointed at OpenRouter), python-dotenv
+- Model: `openai/gpt-oss-20b:free` via OpenRouter
+- pnpm workspaces, Node.js 24, TypeScript 5.9 (for the API server / mockup sandbox, currently unused by the bot)
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+```
+bot/
+  main.py           — entry point, bot init, cog loading
+  cogs/
+    chat.py         — on_message handler, mention + "servent" trigger, random replies
+    commands.py     — slash commands (/ask, /roast, /vibe, /reset, /help)
+  utils/
+    ai.py           — OpenRouter client wrapper + persona system prompts
+    history.py      — per-channel in-memory conversation history
+  .env.example      — template for local dev
+  README.md         — setup & invite instructions
+```
+
+`bot/` is a standalone Python app, not part of the pnpm workspace — it runs via its own `Discord Bot` workflow.
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Two personas: friendlier for server admins, rude/dismissive for everyone else (`bot/utils/ai.py`).
+- Conversation history is in-memory per channel, capped at 20 messages — resets on restart (privacy/simplicity over persistence).
+- Triggers: @mention, the word "serv/servant/servent" anywhere in a message, slash commands, or a random 1-in-15 chance to chime in.
+- Uses OpenRouter (not OpenAI directly) so a user-supplied `OPENROUTER_API_KEY` is enough — no Replit AI integration was available on this account tier.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- Users chat with the bot by mentioning it, saying "servent" + a message, or via `/ask`.
+- `/roast`, `/vibe`, `/reset`, `/help` slash commands.
+- Bot occasionally chimes in unprompted to feel like an active chat member.
 
 ## User preferences
 
@@ -38,8 +52,12 @@ _Populate as you build — explicit user instructions worth remembering across s
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Must enable **Message Content Intent** in the Discord Developer Portal or the bot can't read message text.
+- Slash commands can take up to an hour to propagate globally on first sync (per-guild sync is instant).
+- `_is_admin` only checks permissions for `discord.Member` — bot commands used in DMs treat the user as non-admin.
 
 ## Pointers
 
-- See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
+- Bot invite URL template: `https://discord.com/api/oauth2/authorize?client_id=CLIENT_ID&permissions=274878024704&scope=bot%20applications.commands`
+- See `bot/README.md` for full setup steps
+- See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details (applies to `artifacts/`, not `bot/`)
