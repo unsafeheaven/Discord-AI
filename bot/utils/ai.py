@@ -6,8 +6,8 @@ from openai import AsyncOpenAI
 from typing import List, Dict
 
 client = AsyncOpenAI(
-    api_key=os.environ.get("GROQ_API_KEY", ""),
-    base_url="https://api.groq.com/openai/v1",
+    api_key=os.environ.get("OPENROUTER_API_KEY", ""),
+    base_url="https://openrouter.ai/api/v1",
 )
 
 SLANG = """
@@ -74,7 +74,7 @@ async def get_ai_response(messages: List[Dict], user_message: str, is_admin: boo
 
     try:
         response = await client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="meta-llama/llama-3.3-70b-instruct:free",
             messages=full_messages,
             max_tokens=150,
             temperature=1.0,
