@@ -81,5 +81,7 @@ async def get_ai_response(messages: List[Dict], user_message: str, is_admin: boo
         )
         return response.choices[0].message.content.strip()
     except Exception as e:
+        import logging
+        logging.getLogger("bot").error(f"AI request failed: {e}", exc_info=e)
         # Silent fallback — bot stays in character even on error
         return "bro something went wrong on my end 💀"
