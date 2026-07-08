@@ -12,3 +12,5 @@ Discord bots aren't a listed `createArtifact` type — they have no web preview,
 - Needs a `DISCORD_TOKEN` secret from the user (create at discord.com/developers/applications, enable Message Content Intent) — no Replit integration provides Discord bot tokens (the Discord connector found via `searchIntegrations` is for user-account OAuth, not bot tokens).
 
 **Why:** the artifacts system and its skills assume a web-servable preview; bots are a background service with no path-routed preview, so they sit outside that lifecycle entirely.
+
+**OpenRouter `:free` model gotchas:** free-tier models get discontinued/renamed without notice (e.g. a 404 telling you to use the paid slug instead) and can return HTTP 200 with an empty/`None` message content (e.g. under load or content filtering). Always guard `response.choices[0].message.content` for `None`/empty before calling `.strip()`, and don't assume a `:free` slug that worked once will keep existing — recheck `https://openrouter.ai/api/v1/models` if a model starts erroring.

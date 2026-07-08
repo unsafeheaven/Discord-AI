@@ -79,7 +79,10 @@ async def get_ai_response(messages: List[Dict], user_message: str, is_admin: boo
             max_tokens=150,
             temperature=1.0,
         )
-        return response.choices[0].message.content.strip()
+        content = response.choices[0].message.content
+        if not content or not content.strip():
+            return "..."
+        return content.strip()
     except Exception as e:
         import logging
         logging.getLogger("bot").error(f"AI request failed: {e}")
