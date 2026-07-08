@@ -26,6 +26,20 @@ Required permissions:
 - Use Slash Commands
 - Add Reactions
 
+## Deploying on Railway
+
+This folder is ready to deploy standalone on [Railway](https://railway.app):
+
+1. Push this `bot/` folder to a GitHub repo (or use `railway up` from inside it with the Railway CLI).
+2. In Railway, create a new project → **Deploy from GitHub repo** (or `railway init` + `railway up` if using the CLI), pointing at this folder as the root.
+3. Railway auto-detects it as a Python app via `requirements.txt` and `railway.json`/`Procfile` (worker process, no web port needed).
+4. In the Railway project's **Variables** tab, add:
+   - `DISCORD_TOKEN`
+   - `OPENROUTER_API_KEY` (or `CEREBRAS_API_KEY`/`GROQ_API_KEY` if you've switched providers in `utils/ai.py`)
+5. Deploy. Railway will run `python main.py` as a background worker — check the **Deployments → Logs** tab to confirm it logs in successfully.
+
+**Note:** never paste API keys or tokens directly into chat, README files, or commits — always add them through Railway's Variables tab (or Replit Secrets when running here).
+
 ## Features
 
 | Feature | Description |
